@@ -25,6 +25,7 @@
 
 namespace Entity;
 
+use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Id;
 
@@ -38,9 +39,9 @@ class Item {
 
     /** @Column(type="string") */
     private $title;
-       
-    /** @Column(type="message") */
-    private $text;
+
+    /** @Column(type="text",nullable=true) */
+    private $message;
 
     /**
      * @return mixed
@@ -53,17 +54,17 @@ class Item {
     /**
      * @return mixed
      */
-    public function getText()
+    public function getMessage()
     {
-        return $this->text;
+        return $this->message;
     }
 
     /**
-     * @param mixed $text
+     * @param mixed $message
      */
-    public function setText($text)
+    public function setMessage($message)
     {
-        $this->text = $text;
+        $this->message = $message;
     }
 
     /**
@@ -80,9 +81,7 @@ class Item {
     public function setTitle($title)
     {
         $this->title = $title;
-    }
-    
-    
+    }   
 } 
 ```
 

@@ -25,7 +25,7 @@ class XmlFileLoader extends FileLoader
     protected $classes = null;
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function loadClassMetadata(ClassMetadata $metadata)
     {
@@ -105,7 +105,7 @@ class XmlFileLoader extends FileLoader
                 $options = null;
             }
 
-            $constraints[] = $this->newConstraint($node['name'], $options);
+            $constraints[] = $this->newConstraint((string) $node['name'], $options);
         }
 
         return $constraints;

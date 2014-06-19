@@ -1,9 +1,9 @@
 {
     "require": {
         "php": ">=5.3.2",
-        "doctrine/orm": "2.3.4",
-        "symfony/yaml": "2.4.0",
-        "symfony/event-dispatcher": "2.4.0",
-        "symfony/validator": "2.4.0"
+        "doctrine/orm": "2.4.*",
+        "symfony/yaml": "*",
+        "symfony/event-dispatcher": "*",
+        "symfony/validator": "2.4.*"
     }
 }

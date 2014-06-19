@@ -13,7 +13,6 @@ namespace Symfony\Component\Validator\Tests\Constraints;
 
 use Symfony\Component\Validator\Constraints\NotEqualTo;
 use Symfony\Component\Validator\Constraints\NotEqualToValidator;
-use Symfony\Component\Validator\Tests\Constraints\AbstractComparisonValidatorTestCase;
 
 /**
  * @author Daniel Holmes <daniel@danielholmes.org>
@@ -31,7 +30,7 @@ class NotEqualToValidatorTest extends AbstractComparisonValidatorTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function provideValidComparisons()
     {
@@ -45,7 +44,7 @@ class NotEqualToValidatorTest extends AbstractComparisonValidatorTestCase
     }
 
     /**
-     * {@inheritDoc}
+     * {@inheritdoc}
      */
     public function provideInvalidComparisons()
     {
