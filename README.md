@@ -95,16 +95,29 @@ class Item {
 ```php
 <?php
 use Entity\Item;
+use Symfony\Component\Validator\ConstraintViolation;
 
 $item = new Item();
-$item->setHeadline('test');
+$item->setMessage('test');
+
+$validator = D::$v->validate($item);
+
+if($validator->count()){
+    /** @var ConstraintViolation $error */
+    foreach ($validator as $error) {
+        echo $error->getMessage().'<br>';
+    }
+}
+
+$item->setTitle('Title');
+
 D::$em->persist($item);
 D::$em->flush();
 
 $items = D::$em->getRepository('Entity\Item')->findAll();
 /** @var Item $item */
 foreach ($items as $item) {
-    echo $item->getId().': '.$item->getHeadline().'<br>';
+    echo $item->getId().': '.$item->getTitle().'<br>';
 }
 ```
 

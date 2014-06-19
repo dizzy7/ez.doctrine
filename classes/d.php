@@ -3,6 +3,7 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Tools\Setup;
 use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\ValidatorInterface;
 
 /**
  * Created by PhpStorm.
@@ -19,7 +20,7 @@ class D
     public static $em;
 
     /**
-     * @var Validation
+     * @var ValidatorInterface
      */
     public static $v;
 
