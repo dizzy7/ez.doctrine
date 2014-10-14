@@ -5,12 +5,6 @@ use Doctrine\ORM\Tools\Setup;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\ValidatorInterface;
 
-/**
- * Created by PhpStorm.
- * User: dizzy
- * Date: 19.04.14
- * Time: 14:11
- */
 class D
 {
 
@@ -41,11 +35,8 @@ class D
     {
         spl_autoload_register(
             function ($class) {
-                if (strpos($class, 'Entity') !== 0) {
-                    return false;
-                }
 
-                $path = __DIR__.'/../../..';
+                $path = realpath(__DIR__.'/../../../Entity/');
                 $class = explode('\\', $class);
                 foreach ($class as $part) {
                     $path .= '/' . $part;
@@ -64,9 +55,6 @@ class D
         );
     }
 
-    /**
-     * Инициализация доктрины
-     */
     private static function initEntityManager()
     {
         $bxConnectionConfig = Bitrix\Main\Application::getConnection()->getConfiguration();

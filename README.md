@@ -3,27 +3,30 @@
 
 Модуль представляет из себя прослойку интеграции Doctrine2 в битрикс оформленную в виде модуля.
 
+Требования
+----------
+- Любая редакция 1С-Битрикс
+- Версия php >=5.3.2 (для версии php 5.5 потребуется установка параметра opcache.save_comments=1)
+
 Установка
 ---------
 
-Два варианта установки:
-  - Скачать код в виде zip-архива, и распаковать в папку /local/modules/, либо
-  - Клонировать репозиторий `cd local/modules/ && git clone https://github.com/dizzy7/ez.doctrine.git`
-
 **Внимание! Модуль рассчитан на работу только из папки /local/modules/**
 
-Установить модуль из административной панели (Marketplace->Установленные решения)
+  - Скачать код в виде zip-архива, и распаковать в папку /local/modules/ или клонировать репозиторий `cd local/modules/ && git clone https://github.com/dizzy7/ez.doctrine.git`
+  - Установить модуль из административной панели (Marketplace->Установленные решения)
 
 Использование
 -------------
 
 После инсталяции консольная утилита для управления будет доступна как /local/doctrine
 
-Модели размещаются в папку /local/Entity в пространстве имен ```Entity```. Пример модели:
+Сущности размещаются в папку /local/Entity. Поддерживаются вложенные простанства имен, т.е. можно размещать сущности например в /local/Entity/Items с namespace Items.
+ 
+ 
+ Пример:
 ```php
 <?php
-
-namespace Entity;
 
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Column;
@@ -94,7 +97,6 @@ class Item {
 
 ```php
 <?php
-use Entity\Item;
 use Symfony\Component\Validator\ConstraintViolation;
 
 $item = new Item();
@@ -114,7 +116,7 @@ $item->setTitle('Title');
 D::$em->persist($item);
 D::$em->flush();
 
-$items = D::$em->getRepository('Entity\Item')->findAll();
+$items = D::$em->getRepository('Item')->findAll();
 /** @var Item $item */
 foreach ($items as $item) {
     echo $item->getId().': '.$item->getTitle().'<br>';

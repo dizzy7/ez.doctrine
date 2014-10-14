@@ -14,24 +14,18 @@ namespace Symfony\Component\Validator\Tests\Constraints;
 use Symfony\Component\Validator\Constraints\Range;
 use Symfony\Component\Validator\Constraints\RangeValidator;
 
-class RangeValidatorTest extends \PHPUnit_Framework_TestCase
+class RangeValidatorTest extends AbstractConstraintValidatorTest
 {
-    protected $context;
-    protected $validator;
-
-    protected function setUp()
+    protected function createValidator()
     {
-        $this->context = $this->getMock('Symfony\Component\Validator\ExecutionContext', array(), array(), '', false);
-        $this->validator = new RangeValidator();
-        $this->validator->initialize($this->context);
+        return new RangeValidator();
     }
 
     public function testNullIsValid()
     {
-        $this->context->expects($this->never())
-            ->method('addViolation');
-
         $this->validator->validate(null, new Range(array('min' => 10, 'max' => 20)));
+
+        $this->assertNoViolation();
     }
 
     public function getTenToTwenty()
@@ -73,11 +67,10 @@ class RangeValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testValidValuesMin($value)
     {
-        $this->context->expects($this->never())
-            ->method('addViolation');
-
         $constraint = new Range(array('min' => 10));
         $this->validator->validate($value, $constraint);
+
+        $this->assertNoViolation();
     }
 
     /**
@@ -85,11 +78,10 @@ class RangeValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testValidValuesMax($value)
     {
-        $this->context->expects($this->never())
-            ->method('addViolation');
-
         $constraint = new Range(array('max' => 20));
         $this->validator->validate($value, $constraint);
+
+        $this->assertNoViolation();
     }
 
     /**
@@ -97,11 +89,10 @@ class RangeValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testValidValuesMinMax($value)
     {
-        $this->context->expects($this->never())
-            ->method('addViolation');
-
         $constraint = new Range(array('min' => 10, 'max' => 20));
         $this->validator->validate($value, $constraint);
+
+        $this->assertNoViolation();
     }
 
     /**
@@ -114,14 +105,12 @@ class RangeValidatorTest extends \PHPUnit_Framework_TestCase
             'minMessage' => 'myMessage',
         ));
 
-        $this->context->expects($this->once())
-            ->method('addViolation')
-            ->with('myMessage', $this->identicalTo(array(
-                '{{ value }}' => $value,
-                '{{ limit }}' => 10,
-        )));
-
         $this->validator->validate($value, $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', $value)
+            ->setParameter('{{ limit }}', 10)
+            ->assertRaised();
     }
 
     /**
@@ -134,14 +123,12 @@ class RangeValidatorTest extends \PHPUnit_Framework_TestCase
             'maxMessage' => 'myMessage',
         ));
 
-        $this->context->expects($this->once())
-            ->method('addViolation')
-            ->with('myMessage', $this->identicalTo(array(
-                '{{ value }}' => $value,
-                '{{ limit }}' => 20,
-            )));
-
         $this->validator->validate($value, $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', $value)
+            ->setParameter('{{ limit }}', 20)
+            ->assertRaised();
     }
 
     /**
@@ -156,14 +143,12 @@ class RangeValidatorTest extends \PHPUnit_Framework_TestCase
             'maxMessage' => 'myMaxMessage',
         ));
 
-        $this->context->expects($this->once())
-            ->method('addViolation')
-            ->with('myMaxMessage', $this->identicalTo(array(
-                '{{ value }}' => $value,
-                '{{ limit }}' => 20,
-            )));
-
         $this->validator->validate($value, $constraint);
+
+        $this->buildViolation('myMaxMessage')
+            ->setParameter('{{ value }}', $value)
+            ->setParameter('{{ limit }}', 20)
+            ->assertRaised();
     }
 
     /**
@@ -178,14 +163,12 @@ class RangeValidatorTest extends \PHPUnit_Framework_TestCase
             'maxMessage' => 'myMaxMessage',
         ));
 
-        $this->context->expects($this->once())
-            ->method('addViolation')
-            ->with('myMinMessage', $this->identicalTo(array(
-            '{{ value }}' => $value,
-            '{{ limit }}' => 10,
-        )));
-
         $this->validator->validate($value, $constraint);
+
+        $this->buildViolation('myMinMessage')
+            ->setParameter('{{ value }}', $value)
+            ->setParameter('{{ limit }}', 10)
+            ->assertRaised();
     }
 
     public function getInvalidValues()
@@ -207,14 +190,12 @@ class RangeValidatorTest extends \PHPUnit_Framework_TestCase
             'minMessage' => 'myMessage',
         ));
 
-        $this->context->expects($this->once())
-            ->method('addViolation')
-            ->with('myMessage', array(
-                '{{ value }}' => 9,
-                '{{ limit }}' => 10,
-            ));
-
         $this->validator->validate(9, $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', 9)
+            ->setParameter('{{ limit }}', 10)
+            ->assertRaised();
     }
 
     public function testMaxMessageIsSet()
@@ -225,13 +206,24 @@ class RangeValidatorTest extends \PHPUnit_Framework_TestCase
             'maxMessage' => 'myMessage',
         ));
 
-        $this->context->expects($this->once())
-            ->method('addViolation')
-            ->with('myMessage', array(
-                '{{ value }}' => 21,
-                '{{ limit }}' => 20,
-            ));
-
         $this->validator->validate(21, $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', 21)
+            ->setParameter('{{ limit }}', 20)
+            ->assertRaised();
+    }
+
+    public function testNonNumeric()
+    {
+        $this->validator->validate('abcd', new Range(array(
+            'min' => 10,
+            'max' => 20,
+            'invalidMessage' => 'myMessage',
+        )));
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', '"abcd"')
+            ->assertRaised();
     }
 }

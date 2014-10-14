@@ -14,38 +14,25 @@ namespace Symfony\Component\Validator\Tests\Constraints;
 use Symfony\Component\Validator\Constraints\Regex;
 use Symfony\Component\Validator\Constraints\RegexValidator;
 
-class RegexValidatorTest extends \PHPUnit_Framework_TestCase
+class RegexValidatorTest extends AbstractConstraintValidatorTest
 {
-    protected $context;
-    protected $validator;
-
-    protected function setUp()
+    protected function createValidator()
     {
-        $this->context = $this->getMock('Symfony\Component\Validator\ExecutionContext', array(), array(), '', false);
-        $this->validator = new RegexValidator();
-        $this->validator->initialize($this->context);
-    }
-
-    protected function tearDown()
-    {
-        $this->context = null;
-        $this->validator = null;
+        return new RegexValidator();
     }
 
     public function testNullIsValid()
     {
-        $this->context->expects($this->never())
-            ->method('addViolation');
-
         $this->validator->validate(null, new Regex(array('pattern' => '/^[0-9]+$/')));
+
+        $this->assertNoViolation();
     }
 
     public function testEmptyStringIsValid()
     {
-        $this->context->expects($this->never())
-            ->method('addViolation');
-
         $this->validator->validate('', new Regex(array('pattern' => '/^[0-9]+$/')));
+
+        $this->assertNoViolation();
     }
 
     /**
@@ -61,11 +48,10 @@ class RegexValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testValidValues($value)
     {
-        $this->context->expects($this->never())
-            ->method('addViolation');
-
         $constraint = new Regex(array('pattern' => '/^[0-9]+$/'));
         $this->validator->validate($value, $constraint);
+
+        $this->assertNoViolation();
     }
 
     public function getValidValues()
@@ -85,16 +71,14 @@ class RegexValidatorTest extends \PHPUnit_Framework_TestCase
     {
         $constraint = new Regex(array(
             'pattern' => '/^[0-9]+$/',
-            'message' => 'myMessage'
+            'message' => 'myMessage',
         ));
 
-        $this->context->expects($this->once())
-            ->method('addViolation')
-            ->with('myMessage', array(
-                '{{ value }}' => $value,
-            ));
-
         $this->validator->validate($value, $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', '"'.$value.'"')
+            ->assertRaised();
     }
 
     public function getInvalidValues()
@@ -166,7 +150,7 @@ class RegexValidatorTest extends \PHPUnit_Framework_TestCase
         // Dropped because of match=false
         $constraint = new Regex(array(
             'pattern' => '/[a-z]+/',
-            'match' => false
+            'match' => false,
         ));
         $this->assertNull($constraint->getHtmlPattern());
     }

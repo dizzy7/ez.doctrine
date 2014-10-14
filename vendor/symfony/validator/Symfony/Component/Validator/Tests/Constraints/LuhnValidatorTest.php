@@ -14,38 +14,25 @@ namespace Symfony\Component\Validator\Tests\Constraints;
 use Symfony\Component\Validator\Constraints\Luhn;
 use Symfony\Component\Validator\Constraints\LuhnValidator;
 
-class LuhnValidatorTest extends \PHPUnit_Framework_TestCase
+class LuhnValidatorTest extends AbstractConstraintValidatorTest
 {
-    protected $context;
-    protected $validator;
-
-    protected function setUp()
+    protected function createValidator()
     {
-        $this->context = $this->getMock('Symfony\Component\Validator\ExecutionContext', array(), array(), '', false);
-        $this->validator = new LuhnValidator();
-        $this->validator->initialize($this->context);
-    }
-
-    protected function tearDown()
-    {
-        $this->context = null;
-        $this->validator = null;
+        return new LuhnValidator();
     }
 
     public function testNullIsValid()
     {
-        $this->context->expects($this->never())
-            ->method('addViolation');
-
         $this->validator->validate(null, new Luhn());
+
+        $this->assertNoViolation();
     }
 
     public function testEmptyStringIsValid()
     {
-        $this->context->expects($this->never())
-            ->method('addViolation');
-
         $this->validator->validate('', new Luhn());
+
+        $this->assertNoViolation();
     }
 
     /**
@@ -53,10 +40,9 @@ class LuhnValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testValidNumbers($number)
     {
-        $this->context->expects($this->never())
-            ->method('addViolation');
-
         $this->validator->validate($number, new Luhn());
+
+        $this->assertNoViolation();
     }
 
     public function getValidNumbers()
@@ -88,13 +74,15 @@ class LuhnValidatorTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidNumbers($number)
     {
-        $constraint = new Luhn();
-
-        $this->context->expects($this->once())
-            ->method('addViolation')
-            ->with($constraint->message);
+        $constraint = new Luhn(array(
+            'message' => 'myMessage',
+        ));
 
         $this->validator->validate($number, $constraint);
+
+        $this->buildViolation('myMessage')
+            ->setParameter('{{ value }}', '"'.$number.'"')
+            ->assertRaised();
     }
 
     public function getInvalidNumbers()

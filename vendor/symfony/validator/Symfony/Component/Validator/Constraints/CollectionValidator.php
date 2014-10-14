@@ -53,12 +53,10 @@ class CollectionValidator extends ConstraintValidator
                 (is_array($value) && array_key_exists($field, $value)) ||
                 ($value instanceof \ArrayAccess && $value->offsetExists($field))
             ) {
-                foreach ($fieldConstraint->constraints as $constr) {
-                    $context->validateValue($value[$field], $constr, '['.$field.']', $group);
-                }
+                $context->validateValue($value[$field], $fieldConstraint->constraints, '['.$field.']', $group);
             } elseif (!$fieldConstraint instanceof Optional && !$constraint->allowMissingFields) {
                 $context->addViolationAt('['.$field.']', $constraint->missingFieldsMessage, array(
-                    '{{ field }}' => $field
+                    '{{ field }}' => $this->formatValue($field),
                 ), null);
             }
         }
@@ -67,7 +65,7 @@ class CollectionValidator extends ConstraintValidator
             foreach ($value as $field => $fieldValue) {
                 if (!isset($constraint->fields[$field])) {
                     $context->addViolationAt('['.$field.']', $constraint->extraFieldsMessage, array(
-                        '{{ field }}' => $field
+                        '{{ field }}' => $this->formatValue($field),
                     ), $fieldValue);
                 }
             }
