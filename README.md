@@ -24,23 +24,33 @@
 Сущности размещаются в папку /local/Entity. Поддерживаются вложенные простанства имен, т.е. можно размещать сущности например в /local/Entity/Items с namespace Items.
  
  
- Пример:
+Пример:
+
 ```php
 <?php
 
 use Doctrine\ORM\Mapping\Entity;
 use Doctrine\ORM\Mapping\Column;
+use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Class Item
  * @Entity
  */
 class Item {
-    /** @Id @Column(type="integer") @GeneratedValue */
+    /**
+     * @Id
+     * @Column(type="integer")
+     * @GeneratedValue
+     */
     private $id;
 
-    /** @Column(type="string") */
+    /**
+     * @Column(type="string")
+     * @Assert\NotBlank()
+     */
     private $title;
 
     /** @Column(type="text",nullable=true) */
@@ -84,7 +94,7 @@ class Item {
     public function setTitle($title)
     {
         $this->title = $title;
-    }   
+    }
 } 
 ```
 
