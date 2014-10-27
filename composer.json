@@ -4,6 +4,7 @@
         "doctrine/orm": "2.4.*",
         "symfony/yaml": "*",
         "symfony/event-dispatcher": "*",
-        "symfony/validator": "2.4.*"
+        "symfony/validator": "2.4.*",
+        "symfony/finder": "~2.5"
     }
 }
