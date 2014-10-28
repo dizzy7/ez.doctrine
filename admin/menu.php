@@ -1,5 +1,7 @@
 <?php
 
+use Ez\Doctrine\DoctrineMenu;
+
 IncludeModuleLangFile(__FILE__);
 
 if ($USER->IsAdmin()) {
@@ -9,12 +11,12 @@ if ($USER->IsAdmin()) {
 
     $items = array();
 
-    $helper = new DoctrineMenuHelper();
+    $helper = new DoctrineMenu();
     $entities = $helper->getEntitiesList();
 
     foreach ($entities as $entity) {
         $items[] = array(
-            "text"      => $entity['class'],
+            "text"      => $entity['title'] ?: $entity['class'],
             "url"       => "highloadblock_rows_list.php?ENTITY_ID=",
             "module_id" => "ez.doctrine",
             "more_url"  => Array(
@@ -45,23 +47,4 @@ if ($USER->IsAdmin()) {
 }
 
 
-class DoctrineMenuHelper {
 
-    public function getEntitiesList(){
-        $finder = new \Symfony\Component\Finder\Finder();
-        $finder->files()->in(__DIR__.'/../../../Entity')->exclude('_proxy');
-
-        $entities = array();
-
-        /** @var Symfony\Component\Finder\SplFileInfo $item */
-        foreach ($finder as $item) {
-            $entities[] = array(
-                'class' => str_replace('/','\\',substr($item->getRelativePathname(),0,-4)),
-                'path' => $item->getRealPath()
-            );
-        }
-
-        return $entities;
-
-    }
-}

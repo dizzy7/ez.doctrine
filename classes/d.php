@@ -53,6 +53,8 @@ class D
             true,
             false
         );
+
+
     }
 
     private static function initEntityManager()
@@ -70,9 +72,13 @@ class D
         AnnotationRegistry::registerFile(
             __DIR__ . "/../vendor/doctrine/orm/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php"
         );
+//        AnnotationRegistry::registerAutoloadNamespace(
+//            'Symfony\Component\Validator\Constraint',
+//            __DIR__ . '/../vendor/symfony/validator'
+//        );
         AnnotationRegistry::registerAutoloadNamespace(
-            'Symfony\Component\Validator\Constraint',
-            __DIR__ . '/../vendor/symfony/validator'
+            'Ez\Doctrine\Mapping',
+            __DIR__ . '/../lib/Mapping/'
         );
 
         $config = Setup::createAnnotationMetadataConfiguration(
