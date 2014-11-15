@@ -1,6 +1,7 @@
 <?php
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query;
 use Ez\Doctrine\Mapping\Title;
 
 /** @var CMain $APPLICATION */
@@ -38,6 +39,10 @@ $title = $reader->getClassAnnotation($reflection,'Ez\\Doctrine\\Mapping\\Title')
 $properties = $reflection->getProperties();
 foreach ($properties as $property) {
     $title = $reader->getPropertyAnnotation($property,'Ez\\Doctrine\\Mapping\\Property');
+    $column = $reader->getPropertyAnnotation($property,'Doctrine\\ORM\\Mapping\\Column');
+    if($column===null){
+        continue;
+    }
     if($title instanceof \Ez\Doctrine\Mapping\Property) {
         $title = $title->getName();
     } else {
@@ -52,16 +57,18 @@ foreach ($properties as $property) {
     );
 }
 
-$data = D::$em->getRepository($_GET['ENTITY_ID'])->findAll();
-/** @var News $row */
-foreach ($data as $row) {
-    $lAdmin->AddRow($row->getId(),[
-            'id' => $row->getId(),
-            'title' => $row->getTitle(),
-            'body' => $row->getBody()
-        ]);
-}
+$data = D::$em->createQuery('SELECT t FROM '.$reflection->getName().' t')->getArrayResult();
 
+foreach ($data as $item) {
+    $row = $lAdmin->AddRow($item['id'],$item,'/bitrix/admin/doctrine2_edit_entity?ENTITY_ID='.$_GET['ENTITY_ID'].'&ID='.$item['id']);
+    $arActions[] = array(
+        "ICON"=>"edit",
+        "DEFAULT"=>true,
+        "TEXT"=>"Редактировать",
+        "ACTION"=>$lAdmin->ActionRedirect('/bitrix/admin/doctrine_edit_entity?ENTITY_ID='.$_GET['ENTITY_ID'].'&ID='.$item['id']),
+    );
+    $row->AddActions($arActions);
+}
 
 $lAdmin->AddHeaders($headers);
 

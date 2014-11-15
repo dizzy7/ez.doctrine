@@ -3,6 +3,7 @@ namespace Ez\Doctrine;
 
 use D;
 use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\ORM\Mapping\MappingException;
 use Ez\Doctrine\Mapping\Title;
 
 class DoctrineMenu
@@ -19,7 +20,11 @@ class DoctrineMenu
         foreach ($finder as $item) {
             $class = str_replace('/', '\\', substr($item->getRelativePathname(), 0, -4));
 
-            $reflection = D::$em->getClassMetadata($class)->getReflectionClass();
+            try {
+                $reflection = D::$em->getClassMetadata($class)->getReflectionClass();
+            } catch (MappingException $e){
+                continue;
+            }
 
             $reader = new AnnotationReader();
             /** @var Title $title */
