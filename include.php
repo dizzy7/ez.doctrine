@@ -1,6 +1,8 @@
 <?php
 
-//require_once __DIR__.'/lib/Mapping/Title.php';
+require_once __DIR__.'/lib/Mapping/Title.php';
+require_once __DIR__.'/lib/Mapping/Property.php';
+
 
 CModule::AddAutoloadClasses('ez.doctrine',
     array(

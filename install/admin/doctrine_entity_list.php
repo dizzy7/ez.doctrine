@@ -1,0 +1,1 @@
+<?require($_SERVER["DOCUMENT_ROOT"]."/local/modules/ez.doctrine/admin/doctrine_entity_list.php");?>

@@ -17,12 +17,12 @@ if ($USER->IsAdmin()) {
     foreach ($entities as $entity) {
         $items[] = array(
             "text"      => $entity['title'] ?: $entity['class'],
-            "url"       => "highloadblock_rows_list.php?ENTITY_ID=",
+            "url"       => "doctrine_entity_list.php?ENTITY_ID=".$entity['class'],
             "module_id" => "ez.doctrine",
-            "more_url"  => Array(
-                "highloadblock_row_edit.php?ENTITY_ID=",
-                "highloadblock_entity_edit.php?ID="
-            ),
+//            "more_url"  => Array(
+//                "doctrine_entity_list.php.php?ENTITY_ID=".,
+//                "highloadblock_entity_edit.php?ID="
+//            ),
         );
     }
 

@@ -11,7 +11,7 @@ class DoctrineMenu
     public function getEntitiesList()
     {
         $finder = new \Symfony\Component\Finder\Finder();
-        $finder->files()->in(__DIR__ . '/../../../Entity')->exclude('_proxy');
+        $finder->files()->in(__DIR__ . '/../../../Entity')->exclude('_proxy')->notName('*.php~');
 
         $entities = array();
 
